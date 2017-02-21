@@ -14,7 +14,7 @@ use yii\helpers\Html;
  * @license http://www.opensource.org/licenses/bsd-license.php New BSD License
  * @version 1.0.6
  *
- * @property string|Image $image
+ * @property Image $image
  */
 class EasyImage extends Component
 {

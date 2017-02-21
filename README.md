@@ -12,13 +12,13 @@ The preferred way to install this extension is through [composer](http://getcomp
 Either run
 
 ```
-php composer.phar require axelpal/yii2-easyImage
+php composer.phar require mauglee/yii2-easyimage
 ```
 
 or add
 
 ```
-"axelpal/yii2-easyImage": "^1.0"
+"mauglee/yii2-easyimage": "^1.0"
 ```
 
 to the require section of your `composer.json` file.
@@ -40,14 +40,14 @@ return [
             'quality' => 100,
             'cachePath' => '/easyimage/',
             'cacheTime' => 2592000,
-            'retinaSupport' => false,
+            'retinaSupport' => true,
             'basePath' => '@webroot',
             'baseUrl' => '@web',
         ]
     ],
 ];
 ```
-####Parameters
+#### Parameters
 - string `$file` required - Image file path
 - string `$driver` - Driver: `GD`, `Imagick`
 
@@ -77,9 +77,32 @@ Yii::$app->easyImage->thumbOf('image.png', [
 ```
 **Note.** This method return [Html::img()](http://www.yiiframework.com/doc-2.0/yii-helpers-basehtml.html)
 
-####Parameters
+Example using different filetypes, diferrent images source path:
+
+```php
+// in real situation those filenames are retrieved from DB 
+$images = [
+    '01.jpg',
+    '02.jpg',
+    '03.png',
+];
+
+foreach ( $images as $image ) {
+    $file_path = Yii::getAlias( '@app/data/image/logo/' ) . $image;
+    if ( is_file( $file_path ) ) {
+        echo Yii::$app->easyImage->thumbOf( $file_path, [
+            'resize'  => [ 'width' => 300, 'height' => 300 ],
+            'type'    => 'jpg',
+            'quality' => '86',
+        ], [], filemtime( $file_path ) ); // ← this last argument is to create another cache version if source file is modified
+    }
+}
+```
+
+#### Parameters
 - string `$file` required - Image file path
-- array `$params` - Image manipulation methods. See [Methods](README.md#methods)
+- array `$params` - Image manipulation methods
 - array `$htmlOptions` - options for Html::img()
 
-For full details on usage, see the [documentation](https://github.com/zhdanovartur/yii-easyimage).
+For full details on usage, see the [documentation on authors page](https://github.com/zhdanovartur/yii-easyimage).
+**Note:** Some differencies may occur, because original version is written for Yii v1
