@@ -41,6 +41,7 @@ return [
             'cachePath' => '/easyimage/',
             'cacheTime' => 2592000,
             'retinaSupport' => true,
+            'dppcp'         => 2, // Device pixels per CSS pixel (retina stuff)
             'basePath' => '@webroot',
             'baseUrl' => '@web',
         ]
