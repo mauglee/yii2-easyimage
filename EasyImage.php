@@ -91,11 +91,12 @@ class EasyImage extends Component {
 	/**
 	 * Device pixels per CSS pixel
 	 * Use integer numbers
+	 * If this is changed after some images are already create, you must <code>touch</code> source files to invalidate the cache
 	 *
-	 * @var string
+	 * @var array
 	 * @see http://imulus.github.io/retinajs/
 	 */
-	public $dppcp = 2;
+	public $pixel_ratio = [ 2 ];
 
 	/**
 	 * Convert object to binary data of current image.
@@ -312,13 +313,19 @@ class EasyImage extends Component {
 
 		// Same for high-resolution image
 		if ( $this->retinaSupport && $result ) {
-			if ( $this->getImage()->width * 2 <= $originWidth && $this->getImage()->height * 2 <= $originHeight ) {
-				$retinaFile = $cachePath . DIRECTORY_SEPARATOR . $hash . '@' . $this->dppcp . 'x.' . $cacheFileExt;
-				if ( isset( $params['resize']['width'] ) && isset( $params['resize']['height'] ) ) {
-					$params['resize']['width']  = $this->getImage()->width * 2;
-					$params['resize']['height'] = $this->getImage()->height * 2;
+			foreach ( $this->pixel_ratio as $dppcp ) {
+				if ( $this->getImage()->width * $dppcp <= $originWidth && $this->getImage()->height * $dppcp <= $originHeight ) {
+					$retinaFile = $cachePath . DIRECTORY_SEPARATOR . $hash . '@' . $dppcp . 'x.' . $cacheFileExt;
+					if ( isset( $params['resize']['width'] ) || isset( $params['resize']['height'] ) ) {
+						if ( isset( $params['resize']['width'] ) ) {
+							$params['resize']['width'] = $this->getImage()->width * $dppcp;
+						}
+						if ( isset( $params['resize']['height'] ) ) {
+							$params['resize']['height'] = $this->getImage()->height * $dppcp;
+						}
+						$this->_doThumbOf( $file, $retinaFile, $params );
+					}
 				}
-				$this->_doThumbOf( $file, $retinaFile, $params );
 			}
 		}
 
@@ -343,13 +350,20 @@ class EasyImage extends Component {
 
 		$img_src = $this->thumbSrcOf( $file, $params, $hash );
 
-		if ( $this->retinaSupport && ( false !== $retina_img_src = $this->getRetinaImgSrc( $img_src ) ) ) {
-			if ( $this->dppcp > 1 ) {
-				$htmlOptions['srcset'] = implode( ', ', [
-					$img_src . ' 1x',
-					$retina_img_src . ' ' . $this->dppcp . 'x',
-				] );
+		if ( $this->retinaSupport ) {
+
+			$srcset = [ $img_src . ' 1x' ];
+
+			foreach ( $this->pixel_ratio as $dppcp ) {
+				if ( ( $dppcp > 1 ) && ( false !== $retina_img_src = $this->getRetinaImgSrc( $img_src, $dppcp ) ) ) {
+					$srcset[] = $retina_img_src . ' ' . $dppcp . 'x';
+				}
 			}
+
+			if ( count( $srcset ) > 1 ) {
+				$htmlOptions['srcset'] = implode( ', ', $srcset );
+			}
+
 		}
 
 		return Html::img( $img_src, $htmlOptions );
@@ -360,14 +374,15 @@ class EasyImage extends Component {
 	 * E.g. it is not created if source file was too small, etc.
 	 *
 	 * @param string $thumbSrcOf should be output of thumbSrcOf() method
+	 * @param int $dppcp device pixels per CSS pixel
 	 *
 	 * @return false|string image URL
 	 */
-	public function getRetinaImgSrc( $thumbSrcOf ) {
+	public function getRetinaImgSrc( $thumbSrcOf, $dppcp = 2 ) {
 
 		$file_name_retina = implode( '', [
 			pathinfo( $thumbSrcOf, PATHINFO_FILENAME ),
-			'@' . $this->dppcp . 'x.',
+			'@' . $dppcp . 'x.',
 			pathinfo( $thumbSrcOf, PATHINFO_EXTENSION )
 		] );
 
