@@ -23,7 +23,7 @@
     },
     "autoload": {
         "psr-4": {
-            "cliff363825\\image\\": ""
+            "mauglee\\easyimage\\": ""
         }
     }
 }

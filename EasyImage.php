@@ -1,7 +1,8 @@
 <?php
-namespace cliff363825\image;
 
-use cliff363825\image\drivers\Image;
+namespace mauglee\easyimage;
+
+use mauglee\easyimage\drivers\Image;
 use Yii;
 use yii\base\Component;
 use yii\helpers\Html;

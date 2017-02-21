@@ -1,4 +1,4 @@
 <?php
-namespace cliff363825\image\drivers;
+namespace mauglee\easyimage\drivers;
 
 abstract class Image extends Kohana_Image {}

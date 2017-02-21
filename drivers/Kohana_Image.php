@@ -1,5 +1,5 @@
 <?php
-namespace cliff363825\image\drivers;
+namespace mauglee\easyimage\drivers;
 /**
  * Image manipulation support. Allows images to be resized, cropped, etc.
  *

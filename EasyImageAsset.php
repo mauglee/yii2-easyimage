@@ -1,11 +1,11 @@
 <?php
-namespace cliff363825\image;
+namespace mauglee\easyimage;
 
 use yii\web\AssetBundle;
 
 /**
  * Class EasyImageAsset
- * @package cliff363825\image
+ * @package mauglee\easyimage
  */
 class EasyImageAsset extends AssetBundle
 {

@@ -2,7 +2,7 @@ Image Component for Yii2
 ========================
 Image Component for Yii2
 
-This extension is base on [yii-easyImage](https://github.com/zhdanovartur/yii-easyimage), used for Yii2.
+This extension is based on [yii-easyImage](https://github.com/zhdanovartur/yii-easyimage)
 
 Installation
 ------------
@@ -18,10 +18,10 @@ php composer.phar require mauglee/yii2-easyimage
 or add
 
 ```
-"mauglee/yii2-easyimage": "^1.0"
+"mauglee/yii2-easyimage": "@dev"
 ```
 
-to the require section of your `composer.json` file.
+to the `require-dev` section of your `composer.json` file.
 
 
 Usage
@@ -31,19 +31,17 @@ Once the extension is installed, simply modify your application configuration as
 
 ```php
 return [
-    ...
     'components' => [
-        ....
         'easyImage' => [
-            'class' => 'cliff363825\image\EasyImage',
-            'driver' => 'GD',
-            'quality' => 100,
-            'cachePath' => '/easyimage/',
-            'cacheTime' => 2592000,
+            'class'         => 'cliff363825\image\EasyImage',
+            'driver'        => 'GD',
+            'quality'       => 100,
+            'cachePath'     => '/easyimage/',
+            'cacheTime'     => 2592000,
             'retinaSupport' => true,
-            'pixel_ratio'         => 2, // Device pixels per CSS pixel (retina stuff)
-            'basePath' => '@webroot',
-            'baseUrl' => '@web',
+            'pixel_ratio'   => [ 2, 3 ], // Device pixels per CSS pixel (retina stuff)
+            'basePath'      => '@webroot',
+            'baseUrl'       => '@web',
         ]
     ],
 ];
@@ -95,7 +93,7 @@ foreach ( $images as $image ) {
             'resize'  => [ 'width' => 300, 'height' => 300 ],
             'type'    => 'jpg',
             'quality' => '86',
-        ], [], filemtime( $file_path ) ); // ← this last argument is to create another cache version if source file is modified
+        ] );
     }
 }
 ```

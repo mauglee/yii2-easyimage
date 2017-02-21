@@ -1,5 +1,5 @@
 <?php
-namespace cliff363825\image\drivers;
+namespace mauglee\easyimage\drivers;
 /**
  * Support for image manipulation using [GD](http://php.net/GD).
  *
