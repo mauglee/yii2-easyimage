@@ -65,7 +65,7 @@ class EasyImage extends Component {
 	/**
 	 * @var int cache lifetime in seconds
 	 */
-	public $cacheTime = 2592000;
+	public $cacheTime = 60*60*24*180;
 
 	/**
 	 * @var int value of quality: 0-100 (only for JPEG)
@@ -282,7 +282,7 @@ class EasyImage extends Component {
 	public function thumbSrcOf( $file, $params = array(), $hash = null ) {
 
 		// Paths
-		$hash          = md5( $file . serialize( $params ) . (string) $hash );
+		$hash          = md5( $file . serialize( $params ) . filemtime( $file ) . (string) $hash );
 		$cachePath     = Yii::getAlias( $this->basePath ) . $this->cachePath . $hash{0};
 		$cacheFileExt  = isset( $params['type'] ) ? $params['type'] : pathinfo( $file, PATHINFO_EXTENSION );
 		$cacheFileName = $hash . '.' . $cacheFileExt;
