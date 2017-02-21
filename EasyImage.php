@@ -32,12 +32,12 @@ class EasyImage extends Component
     const FLIP_VERTICAL = 0x12;
 
     /**
-     * 文件保存根路径
+     * Root path for saving files
      * @var string
      */
     public $basePath = '@webroot';
     /**
-     * 文件保存根url
+     * Root URL
      * @var string
      */
     public $baseUrl = '@web';
