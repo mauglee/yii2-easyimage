@@ -328,6 +328,9 @@ class EasyImage extends Component {
 	/**
 	 * This method returns prepared HTML code for cached thumbnail.
 	 * Use standard yii-component CHtml::image().
+	 * [Here you'll find srcset explained](https://webkit.org/demos/srcset/ )
+	 *
+	 * @see https://webkit.org/demos/srcset/
 	 *
 	 * @param string $file path
 	 * @param array $params
