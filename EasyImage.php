@@ -89,12 +89,13 @@ class EasyImage extends Component {
 	public $newFileMode = 0660;
 
 	/**
-	 * data-rjs attribute value as in <img src="/images/my_image.png" data-rjs="3" />
+	 * Device pixels per CSS pixel
+	 * Use integer numbers
 	 *
 	 * @var string
 	 * @see http://imulus.github.io/retinajs/
 	 */
-	public $dataRjs = 2;
+	public $dppcp = 2;
 
 	/**
 	 * Convert object to binary data of current image.
@@ -312,7 +313,7 @@ class EasyImage extends Component {
 		// Same for high-resolution image
 		if ( $this->retinaSupport && $result ) {
 			if ( $this->getImage()->width * 2 <= $originWidth && $this->getImage()->height * 2 <= $originHeight ) {
-				$retinaFile = $cachePath . DIRECTORY_SEPARATOR . $hash . '@' . $this->dataRjs . 'x.' . $cacheFileExt;
+				$retinaFile = $cachePath . DIRECTORY_SEPARATOR . $hash . '@' . $this->dppcp . 'x.' . $cacheFileExt;
 				if ( isset( $params['resize']['width'] ) && isset( $params['resize']['height'] ) ) {
 					$params['resize']['width']  = $this->getImage()->width * 2;
 					$params['resize']['height'] = $this->getImage()->height * 2;
@@ -337,13 +338,18 @@ class EasyImage extends Component {
 	 */
 	public function thumbOf( $file, $params = array(), $htmlOptions = array(), $hash = null ) {
 
-		$thumbSrcOf = $this->thumbSrcOf( $file, $params, $hash );
+		$img_src = $this->thumbSrcOf( $file, $params, $hash );
 
-		if ( $this->retinaSupport && $this->retinaFileExists( $thumbSrcOf ) ) {
-			$htmlOptions['data-rjs'] = empty( $htmlOptions['data-rjs'] ) ? $this->dataRjs : $htmlOptions['data-rjs'];
+		if ( $this->retinaSupport && ( false !== $retina_img_src = $this->getRetinaImgSrc( $img_src ) ) ) {
+			if ( $this->dppcp > 1 ) {
+				$htmlOptions['srcset'] = implode( ', ', [
+					$img_src . ' 1x',
+					$retina_img_src . ' ' . $this->dppcp . 'x',
+				] );
+			}
 		}
 
-		return Html::img( $thumbSrcOf, $htmlOptions );
+		return Html::img( $img_src, $htmlOptions );
 	}
 
 	/**
@@ -352,13 +358,13 @@ class EasyImage extends Component {
 	 *
 	 * @param string $thumbSrcOf should be output of thumbSrcOf() method
 	 *
-	 * @return bool
+	 * @return false|string image URL
 	 */
-	public function retinaFileExists( $thumbSrcOf ) {
+	public function getRetinaImgSrc( $thumbSrcOf ) {
 
 		$file_name_retina = implode( '', [
 			pathinfo( $thumbSrcOf, PATHINFO_FILENAME ),
-			'@' . $this->dataRjs . 'x.',
+			'@' . $this->dppcp . 'x.',
 			pathinfo( $thumbSrcOf, PATHINFO_EXTENSION )
 		] );
 
@@ -368,7 +374,9 @@ class EasyImage extends Component {
 			$file_name_retina
 		] );
 
-		return is_file( $file_path_retina );
+		$img_src = Yii::getAlias( $this->baseUrl ) . $this->cachePath . $file_name_retina[0] . '/' . $file_name_retina;
+
+		return is_file( $file_path_retina ) ? $img_src : false;
 	}
 
 	/**
