@@ -8,10 +8,13 @@ use yii\helpers\Html;
 
 /**
  * EasyImage class file.
+ *
  * @author Artur Zhdanov <zhdanovartur@gmail.com>
  * @copyright Copyright &copy; Artur Zhdanov 2013-
  * @license http://www.opensource.org/licenses/bsd-license.php New BSD License
  * @version 1.0.6
+ *
+ * @property string|Image $image
  */
 class EasyImage extends Component
 {
@@ -140,7 +143,7 @@ class EasyImage extends Component
 
     /**
      * This method detects which (absolute or relative) path is used.
-     * @param array $file path
+     * @param string $file path
      * @return string path
      */
     public function detectPath($file)
